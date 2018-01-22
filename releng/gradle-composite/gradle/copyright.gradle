@@ -1,0 +1,114 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.10.0.201712302008-r'
+//        classpath group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.2'
+    }
+    
+}
+
+apply from: 'gradle/console.gradle'
+
+import org.eclipse.jgit.api.*
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.eclipse.jgit.treewalk.*
+import org.eclipse.jgit.treewalk.filter.*
+import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.revwalk.RevCommit
+import java.util.regex.*
+import java.text.SimpleDateFormat
+
+task copyrightUpdate () {
+    group = 'Release Engineering'
+    description = 'Update Copyright: Year range'
+    doLast {
+        projectLocations().values().each { dir -> processGitTree(dir) }
+    }
+}
+
+
+def processGitTree (File gitDir) {
+    def builder = new FileRepositoryBuilder()
+    def repository = builder.setGitDir(new File(gitDir, '.git')).readEnvironment() // scan environment GIT_* variables
+        .findGitDir() // scan up the file system tree
+        .setMustExist(true).build()
+    def git = new Git(repository)
+    println("On branch $repository.branch");
+    println("Work tree at $repository.workTree");
+
+    int modifiedFiles = 0;
+    def walk = new TreeWalk(repository)
+
+    walk.addTree(new FileTreeIterator(repository));
+    walk.setRecursive(true);
+    walk.setFilter(new NotIgnoredFilter(0));
+
+    while (walk.next()) {
+        def f = new File(repository.getWorkTree(), new String(walk.rawPath))
+        def year = getLastCommitYear(git, walk)
+        def content = f.getText('ISO-8859-1')
+        def updated = update(f, content, year)
+        if (!updated.equals(content)) {
+            print(f.path)
+            f.write(updated, 'ISO-8859-1')
+            modifiedFiles++
+            println(yellow(' UPDATED'))
+        } else {
+    //        println(yellow(' UP-TO-DATE'))
+        }
+        /*
+        Path path = Paths.get(walk.getPathString());
+        Path fullPath = repository.getWorkTree().toPath().resolve(path);
+        String original = new String(Files.readAllBytes(fullPath));
+        String updated = modifyContent(git, walk, original);
+        if (!dryRun && !updated.equals(original)) {
+            modifiedFiles++;
+            Files.write(path, updated.getBytes());
+        }
+        */
+    }
+
+    if (modifiedFiles == 0) {
+        println(red("No file was updated."))
+    } else {
+        println(yellow("Updated " + modifiedFiles + " files."))
+    }
+    
+}
+
+def String update (File f, String content, String year) {
+    def m = Pattern.compile("Copyright.*{1,5}(\\d{4})(?:, (\\d{4}))?").matcher(content)
+    def updated = content
+    if (m.find()) {
+        def initialYear = m.group(1)
+        updated = m.replaceFirst("Copyright (c) $initialYear, $year")
+    }
+    return updated
+}
+
+def String getLastCommitYear(Git git, TreeWalk walk) {
+    if (walk.getPathString().endsWith("feature.xml")) {
+        return new SimpleDateFormat("yyyy").format(new Date())
+    }
+	Iterable<RevCommit> call = git.log().addPath(walk.getPathString()).call()
+	Iterator<RevCommit> commitIt = call.iterator();
+	if (commitIt.hasNext()) {
+		RevCommit commit = commitIt.next();
+		return new SimpleDateFormat("yyyy").format(commit.getAuthorIdent().getWhen());
+	}
+	return null;
+}
+
+def green(String s) {
+    return '\033[32m' + s + '\033[0m'
+}
+
+def yellow(String s) {
+    return '\033[33m' + s + '\033[0m'
+}
+
+def red(String s) {
+    return '\033[31m' + s + '\033[0m'
+}

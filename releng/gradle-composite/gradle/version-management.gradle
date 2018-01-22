@@ -1,0 +1,69 @@
+apply from: 'projectFinder.gradle'
+
+def gitRoot = "$rootDir/../../.."
+def locations = projectLocations()
+
+def pomFiles = {
+    FileTree files = fileTree('.').include('NOTHING') // create an empty FileTree and append the locations in a loop to it
+    locations.values().each { f -> files += fileTree(dir: f.path, include: '**/pom.xml') }
+    return files
+}() // () to invoke the evaluation
+
+task setVersion_Tycho () {
+    group = "Release Engineering"
+    description = "Update files: Maven Tycho version"
+    doLast {
+        
+        FileTree files = fileTree('.').include('NOTHING') // create an empty FileTree and append the locations in a loop to it
+        files += fileTree(dir: "${locations.lib}/releng", includes: ['**/pom.xml'])
+        files += fileTree(dir: "${locations.core}/releng", includes: ['**/pom.xml'])
+        files += fileTree(dir: "${locations.extras}/releng", includes: ['**/pom.xml'])
+        files += fileTree(dir: "${locations.xtend}/releng", includes: ['**/pom.xml'])
+        files += fileTree(dir: "${locations.core}/org.eclipse.xtext.tests/testdata/wizard-expectations", includes: ['**/pom.xml'])
+        files += fileTree(dir: "${locations.core}/org.eclipse.xtext.xtext.wizard/src", includes: ['**/ParentProjectDescriptor.xtend'])
+        files += fileTree(dir: "${locations.core}/org.eclipse.xtext.xtext.wizard/xtend-gen", includes: ['**/ParentProjectDescriptor.java'])
+        files += fileTree(dir: "${locations.maven}/org.eclipse.xtext.maven.parent", includes: ['pom.xml'])
+        files += fileTree(dir: "./releng/org.eclipse.xtext.sdk.parent", includes: ['pom.xml'])
+        println("${locations}")
+        files += fileTree(dir: "${locations.eclipse}/releng/org.eclipse.xtext.tycho.parent", includes: ['pom.xml'])
+        files += fileTree(dir: "${locations.eclipse}/ org.eclipse.xtext.xtext.ui.examples/projects/domainmodel/org.eclipse.xtext.example.domainmodel.releng", includes: ['pom.xml'])
+       
+        
+        files.each { file -> 
+            String content = file.getText('ISO-8859-1')
+            if (content.contains('<tycho-version>')) {
+                String updated = content.replaceFirst('<tycho-version>.*</tycho-version>', "<tycho-version>${versions.tycho}</tycho-version>")
+                if (!updated.equals(content)) {
+                    file.write(updated, 'ISO-8859-1')
+                    print(yellow('UPDATED '))
+                } else {
+                    print(yellow('UP-TO-DATE '))
+                }
+                println(file.path)
+            }
+        }
+    }
+}
+task printLocations () {
+//    def loc = projectLocations()
+    doLast {
+        pomFiles().each { f -> println(f) }
+    	}
+}
+
+def relativePath (File file) {
+    file.path.substring("${gitRoot}".length()+1)
+}
+
+
+def green(String s) {
+    return '\033[32m' + s + '\033[0m'
+}
+
+def yellow(String s) {
+    return '\033[33m' + s + '\033[0m'
+}
+
+def red(String s) {
+    return '\033[31m' + s + '\033[0m'
+}

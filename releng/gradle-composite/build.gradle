@@ -1,4 +1,8 @@
 apply from: 'projectFinder.gradle'
+apply from: 'gradle/console.gradle'
+apply from: 'gradle/versions.gradle'
+apply from: 'gradle/version-management.gradle'
+apply from: 'gradle/copyright.gradle'
 
 task('generatePrefs') {
     doLast {
