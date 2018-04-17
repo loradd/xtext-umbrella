@@ -9,7 +9,7 @@ def pomFiles = {
     return files
 }() // () to invoke the evaluation
 
-task setVersion_Tycho () {
+task update_version_tycho () {
     group = "Release Engineering"
     description = "Update files: Maven Tycho version"
     doLast {
@@ -24,7 +24,6 @@ task setVersion_Tycho () {
         files += fileTree(dir: "${locations.core}/org.eclipse.xtext.xtext.wizard/xtend-gen", includes: ['**/ParentProjectDescriptor.java'])
         files += fileTree(dir: "${locations.maven}/org.eclipse.xtext.maven.parent", includes: ['pom.xml'])
         files += fileTree(dir: "./releng/org.eclipse.xtext.sdk.parent", includes: ['pom.xml'])
-        println("${locations}")
         files += fileTree(dir: "${locations.eclipse}/releng/org.eclipse.xtext.tycho.parent", includes: ['pom.xml'])
         files += fileTree(dir: "${locations.eclipse}/ org.eclipse.xtext.xtext.ui.examples/projects/domainmodel/org.eclipse.xtext.example.domainmodel.releng", includes: ['pom.xml'])
        
@@ -44,6 +43,36 @@ task setVersion_Tycho () {
         }
     }
 }
+
+task update_url_orbit () {
+    group = "Release Engineering"
+    description = "Update files: Orbit URL"
+    doLast {
+    println("${locations}")
+        FileTree files = fileTree('.').include('NOTHING') // create an empty FileTree and append the locations in a loop to it
+        files += fileTree(dir: "${locations.eclipse}/org.eclipse.xtext.xtext.ui.examples/projects/domainmodel/org.eclipse.xtext.example.domainmodel.releng/tp", includes: ['*.target,*.tpd'])
+        files += fileTree(dir: "${locations.eclipse}/releng", includes: ['**/*.target'])
+        files += fileTree(dir: "${locations.extras}/releng", includes: ['**/*.target'])
+        files += fileTree(dir: "${locations.xtend}/releng", includes: ['**/*.target'])
+
+        files.each { file ->
+            String content = file.getText('ISO-8859-1')
+            if (content.contains('download.eclipse.org/tools/orbit/downloads')) {
+                String updated = content.replaceFirst('location=".*download\\.eclipse\\.org/tools/orbit/downloads.*"', "location=\"${p2_urls.orbit}\"")
+                if (!updated.equals(content)) {
+                    file.write(updated, 'ISO-8859-1')
+                    print(yellow('UPDATED '))
+                } else {
+                    print(yellow('UP-TO-DATE '))
+                }
+            } else {
+                print(yellow('UP-TO-DATE '))
+            }
+            println(file.path)
+        }
+    }
+}
+
 task printLocations () {
 //    def loc = projectLocations()
     doLast {

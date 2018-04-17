@@ -33,5 +33,6 @@ ext.versions = [
 ext.p2_urls = [
     'eclipse_oxygen'          : 'http://download.eclipse.org/releases/oxygen/201712201001',
     'eclipse_photon'          : 'http://download.eclipse.org/staging/photon/',
-    'xtext_composite_releases': 'http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases'
+    'xtext_composite_releases': 'http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases',
+    'orbit'                   : 'http://download.eclipse.org/tools/orbit/I-builds/I20180414040449/repository'
 ]
