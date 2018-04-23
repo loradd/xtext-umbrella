@@ -9,6 +9,63 @@ def pomFiles = {
     return files
 }() // () to invoke the evaluation
 
+task update_version_xtext () {
+    group = "Release Engineering"
+    description = "Update files: Xtext version"
+    doLast {
+        FileTree files = fileTree('.').include('NOTHING') // create an empty FileTree and append the locations in a loop to it
+
+        files += fileTree(dir: "${locations.lib}/gradle", includes: ['versions.gradle'])
+        files += fileTree(dir: "${locations.core}/gradle", includes: ['versions.gradle'])
+        files += fileTree(dir: "${locations.extras}/gradle", includes: ['versions.gradle'])
+        files += fileTree(dir: "${locations.xtend}/gradle", includes: ['versions.gradle'])
+        files += fileTree(dir: "${locations.web}/gradle", includes: ['versions.gradle'])
+        files += fileTree(dir: "${locations.idea}/gradle", includes: ['versions.gradle'])
+        
+        files.each { file -> updateFile(file, "version = '.*'", "version = '${versions.xtext}'") }
+        
+        
+        /*
+        mavenexec {
+            workingDir ${locations.eclipse}
+        }
+        files.each { file -> 
+            String content = file.getText('ISO-8859-1')
+            String updated = content.replaceFirst("version = '.*'", "version = '${versions.xtext}'")
+            if (!updated.equals(content)) {
+                file.write(updated, 'ISO-8859-1')
+                print(yellow('UPDATED '))
+            } else {
+                print(yellow('UP-TO-DATE '))
+            }
+            println(file.path)
+        }
+        */
+    }
+}
+
+task tycho_set_version_xtext_eclipse (type: MavenExec) {
+    group = "Release Engineering"
+    description = "Update files: Run Tycho versions plugin on xtext-eclipse"
+    workingDir "${locations.eclipse}/releng"
+    goals "tycho-versions:set-version"
+    define([
+        'newVersion' : "${versions.xtext}"
+    ])
+}
+
+def updateFile (File file, String searchRegexp, String replaceRegexp) {
+    String content = file.getText('ISO-8859-1')
+    String updated = content.replaceFirst(searchRegexp, replaceRegexp)
+    if (!updated.equals(content)) {
+        file.write(updated, 'ISO-8859-1')
+        print(yellow('UPDATED '))
+    } else {
+        print(yellow('UP-TO-DATE '))
+    }
+    println(file.path)
+}
+
 task update_version_tycho () {
     group = "Release Engineering"
     description = "Update files: Maven Tycho version"

@@ -1,3 +1,7 @@
+plugins {
+    id "com.github.dkorotych.gradle-maven-exec" version "1.2.2.1"
+}
+
 apply from: 'projectFinder.gradle'
 apply from: 'gradle/console.gradle'
 apply from: 'gradle/versions.gradle'
