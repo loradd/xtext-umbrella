@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<feature id="org.eclipse.xtext.sdk" version="2.14.0.qualifier">
-		<category name="Xtext"/>
-	</feature>
-	<feature id="org.eclipse.xtend.sdk" version="2.14.0.qualifier">
-		<category name="Xtext"/>
-	</feature>
-	<bundle id="org.junit" version="0.0.0"></bundle>
-	<bundle id="org.junit.source" version="0.0.0"></bundle>
-	<bundle id="org.objectweb.asm" version="6.1.1.qualifier"></bundle>
-	<bundle id="org.objectweb.asm.source" version="6.1.1.qualifier"></bundle>
-	<bundle id="org.objectweb.asm.tree" version="6.1.1.qualifier"></bundle>
-	<bundle id="org.objectweb.asm.tree.source" version="6.1.1.qualifier"></bundle>
-	<category-def name="Xtext" label="Xtext"/>
+   <feature id="org.eclipse.xtext.sdk" version="2.14.0.qualifier">
+      <category name="Xtext"/>
+   </feature>
+   <feature id="org.eclipse.xtend.sdk" version="2.14.0.qualifier">
+      <category name="Xtext"/>
+   </feature>
+   <bundle id="org.junit" version="0.0.0"/>
+   <bundle id="org.junit.source" version="0.0.0"/>
+   <bundle id="org.objectweb.asm" version="6.1.1.qualifier"/>
+   <bundle id="org.objectweb.asm.source" version="6.1.1.qualifier"/>
+   <bundle id="org.objectweb.asm.tree" version="6.1.1.qualifier"/>
+   <bundle id="org.objectweb.asm.tree.source" version="6.1.1.qualifier"/>
+   <bundle id="org.junit.jupiter.api" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.jupiter.api.source" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.jupiter.engine" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.jupiter.engine.source" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.jupiter.params" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.jupiter.params.source" version="5.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.commons" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.commons.source" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.engine" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.engine.source" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.launcher" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.launcher.source" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.runner" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.runner.source" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.suite.api" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.junit.platform.suite.api.source" version="1.1.0.v20180327-1502"/>
+   <bundle id="org.opentest4j" version="1.0.0.v20180327-1502"/>
+   <bundle id="org.opentest4j.source" version="1.0.0.v20180327-1502"/>
+   <category-def name="Xtext" label="Xtext"/>
 </site>
