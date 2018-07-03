@@ -82,7 +82,7 @@ task update_version_tycho () {
         files += fileTree(dir: "${locations.maven}/org.eclipse.xtext.maven.parent", includes: ['pom.xml'])
         files += fileTree(dir: "./releng/org.eclipse.xtext.sdk.parent", includes: ['pom.xml'])
         files += fileTree(dir: "${locations.eclipse}/releng/org.eclipse.xtext.tycho.parent", includes: ['pom.xml'])
-        files += fileTree(dir: "${locations.eclipse}/ org.eclipse.xtext.xtext.ui.examples/projects/domainmodel/org.eclipse.xtext.example.domainmodel.releng", includes: ['pom.xml'])
+        files += fileTree(dir: "${locations.eclipse}/org.eclipse.xtext.xtext.ui.examples/projects/domainmodel/org.eclipse.xtext.example.domainmodel.releng", includes: ['pom.xml'])
        
         
         files.each { file -> 

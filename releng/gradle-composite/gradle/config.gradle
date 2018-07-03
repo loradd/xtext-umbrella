@@ -1,0 +1,7 @@
+plugins {
+  id 'org.ajoberstar.grgit' version '1.8.0-rc.1'
+}
+
+git {
+  branch = grgit.branch.current()
+}
