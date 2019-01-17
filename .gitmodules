@@ -1,0 +1,21 @@
+[submodule "xtext-core"]
+	path = xtext-core
+	url = https://github.com/eclipse/xtext-core
+[submodule "xtext-extras"]
+	path = xtext-extras
+	url = https://github.com/eclipse/xtext-extras
+[submodule "xtext-lib"]
+	path = xtext-lib
+	url = https://github.com/eclipse/xtext-lib
+[submodule "xtext-eclipse"]
+	path = xtext-eclipse
+	url = https://github.com/eclipse/xtext-eclipse
+[submodule "xtext-web"]
+	path = xtext-web
+	url = https://github.com/eclipse/xtext-web
+[submodule "xtext-maven"]
+	path = xtext-maven
+	url = https://github.com/eclipse/xtext-maven
+[submodule "xtext-xtend"]
+	path = xtext-xtend
+	url = https://github.com/eclipse/xtext-xtend
