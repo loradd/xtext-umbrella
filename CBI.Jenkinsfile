@@ -42,9 +42,6 @@ spec:
     }
   }
   
-pipeline {
-  agent any
-
   options {
     buildDiscarder(logRotator(numToKeepStr:'15'))
     disableConcurrentBuilds()
