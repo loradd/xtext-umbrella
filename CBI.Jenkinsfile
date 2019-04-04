@@ -69,15 +69,10 @@ spec:
           ])
         }
 
-        sh '''
-          if [ -d ".git" ]; then
-            git reset --hard
-          fi
-        '''
+        checkout scm
+        sh 'git submodule update --init --recursive'
         
         dir('build') { deleteDir() }
-        dir('.m2/repository/org/eclipse/xtext') { deleteDir() }
-        dir('.m2/repository/org/eclipse/xtend') { deleteDir() }
 
         sh '''
           sed_inplace() {
