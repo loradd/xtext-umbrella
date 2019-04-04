@@ -104,7 +104,7 @@ spec:
             /home/vnc/.vnc/xstartup.sh
             mvn \
               -s /home/jenkins/.m2/settings.xml \
-              -f releng \
+              -f pom.xml \
               --batch-mode \
               --update-snapshots \
               -fae \
