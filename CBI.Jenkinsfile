@@ -41,6 +41,9 @@ spec:
     '''
     }
   }
+  
+pipeline {
+  agent any
 
   options {
     buildDiscarder(logRotator(numToKeepStr:'15'))
@@ -51,7 +54,7 @@ spec:
 
   // https://jenkins.io/doc/book/pipeline/syntax/#triggers
   triggers {
-    cron('H 2 * * *')
+    pollSCM('H/5 * * * *')
   }
   
   stages {
@@ -62,11 +65,10 @@ spec:
             [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/eclipse/xtext-core/'],
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
             parameters([
-              choice(choices: ['oxygen', 'photon', 'r201809', 'latest'], 
+              choice(choices: ['oxygen', 'latest', 'r201903', 'r201812', 'r201809', 'photon'], 
               description: 'Which Target Platform should be used?', 
               name: 'target_platform')
-            ]),
-            pipelineTriggers([githubPush()])
+            ])
           ])
         }
 
@@ -101,11 +103,10 @@ spec:
 
     stage('Maven Build') {
       steps {
-        configFileProvider(
-          [configFile(fileId: '7a78c736-d3f8-45e0-8e69-bf07c27b97ff', variable: 'MAVEN_SETTINGS')]) {
           sh '''
+            /home/vnc/.vnc/xstartup.sh
             mvn \
-              -s $MAVEN_SETTINGS \
+              -s /home/jenkins/.m2/settings.xml \
               -f releng \
               --batch-mode \
               --update-snapshots \
@@ -114,7 +115,6 @@ spec:
               -Dtycho.disableP2Mirrors=true \
               clean install
           '''
-        }
       }
     }
   }
