@@ -16,7 +16,6 @@
 		<module>xtext-lib</module>
 		<module>xtext-core</module>
 		<module>xtext-extras</module>
-		<!-- TODO would like to rename to xtext-eclipse ... but will that break backward compatibility? -->
-		<!-- <module>org.eclipse.xtext.root</module> -->
+		<module>xtext-eclipse</module>
 	</modules>
 </project>
