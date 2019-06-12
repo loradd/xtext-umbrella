@@ -17,6 +17,11 @@ spec:
   - name: xtext-buildenv
     image: docker.io/smoht/xtext-buildenv:0.7
     tty: true
+    resources:
+      limits:
+        memory: "3Gi"
+      requests:
+        memory: "2Gi"
     volumeMounts:
     - name: settings-xml
       mountPath: /home/jenkins/.m2/settings.xml
@@ -43,9 +48,9 @@ spec:
   }
   
   options {
-    buildDiscarder(logRotator(numToKeepStr:'15'))
+    buildDiscarder(logRotator(numToKeepStr:'5'))
     disableConcurrentBuilds()
-    timeout(time: 60, unit: 'MINUTES')
+    timeout(time: 240, unit: 'MINUTES')
     timestamps()
   }
 
@@ -65,7 +70,8 @@ spec:
               choice(choices: ['oxygen', 'latest', 'r201903', 'r201812', 'r201809', 'photon'], 
               description: 'Which Target Platform should be used?', 
               name: 'target_platform')
-            ])
+            ]),
+            pipelineTriggers([githubPush()])
           ])
         }
 
@@ -73,6 +79,8 @@ spec:
         sh 'git submodule update --init --recursive'
         
         dir('build') { deleteDir() }
+        dir('.m2/repository/org/eclipse/xtext') { deleteDir() }
+        dir('.m2/repository/org/eclipse/xtend') { deleteDir() }
 
         sh '''
           sed_inplace() {
@@ -97,6 +105,9 @@ spec:
       steps {
           sh '''
             /home/vnc/.vnc/xstartup.sh
+            if [ -f "/.dockerenv" ]; then
+              export MAVEN_OPTS="-XX:MaxRAMPercentage=75.0"
+            fi
             mvn \
               -s /home/jenkins/.m2/settings.xml \
               -f pom.xml \
